@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import { FaRegTrashAlt } from "react-icons/fa"
 const App = () => {
 
   const [userTasks , setuserTasks] = useState('');
@@ -21,6 +21,7 @@ const App = () => {
       return
     }
     const newTaks ={
+      id: Date.now(),
       text: userTasks,
       completed : false,
     }
@@ -36,6 +37,11 @@ const App = () => {
     console.log(newTaks)
     localStorage.setItem('tasks' , JSON.stringify(newTaks))
   }
+  const deletedTask = (id) => {
+    const newTasks = tasks.filter(task => task.id !== id);
+  settasks(newTasks);
+  localStorage.setItem('tasks', JSON.stringify(newTasks));
+  };
   return (
     <div>
       <h1>Todo List App</h1>
@@ -49,14 +55,17 @@ const App = () => {
       <button>Add Tasks</button> <br />
       {tasks.map((item , index) => {
         return (
-          <div key={index} className=''>
-        <label className='cursor-pointer'>
+          <div key={item.id} className='flex items-center gap-x-3'>
+        <label className='cursor-pointer flex'>
           <input
-           type="checkbox" 
+           type="checkbox"
+           checked={item.completed} 
            onChange={(e) => handleChange(e, index) }
            />
-          <span className={item.completed ? 'line-through text-[#b2b2b2] ': ''}>{item.text}</span>
+        <span className={item.completed ? 'line-through text-[#b2b2b2] ': ''}>{item.text}
+        </span>
         </label>
+         <span onClick={() => deletedTask(item.id)} className='cursor-pointer'> {item.completed ? <FaRegTrashAlt/>: ''}</span>
       </div>
         )
       })}
