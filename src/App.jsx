@@ -22,6 +22,12 @@ const App = () => {
     setTasks(updatedTasks)
     localStorage.setItem('tasks' , JSON.stringify(updatedTasks))
     setUserTaks('');
+  }
+  const handleChange = (e , index) => {
+    const ischecked = e.target.checked;
+    const value = e.target.value;
+    const updated = [...tasks] 
+    console.log('checked' , ischecked , value, updated[index])
 
   }
   return (
@@ -31,10 +37,17 @@ const App = () => {
        <form onSubmit={AddTasks}>
        <input type="text" value={userTasks} className='py-2 px-4 border border-black' placeholder='Add Tasks' onChange={(e) => setUserTaks(e.target.value)} />
        <button className='py-1 px-2 border border-black'>Add Tasks</button>
-      {tasks.map((tasks, index)=> 
-        <div key={index}>
-           <p>{tasks}</p>
-        </div>
+      {tasks.map((tasks, index) => 
+       (<div key={index}>
+         <label className='cursor-pointer'>
+         <input
+           type="checkbox"
+           onChange={(e) => handleChange(e, index)}
+          />
+         {tasks}
+          </label>
+           
+        </div>)
        )}
        </form>
       </div>
