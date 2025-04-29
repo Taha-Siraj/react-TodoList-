@@ -2,55 +2,65 @@ import React, { useEffect, useState } from 'react'
 
 const App = () => {
 
-  const [userTasks , setUserTaks] = useState('');
-  let [tasks , setTasks] = useState([]);
+  const [userTasks , setuserTasks] = useState('');
+  const [tasks, settasks] = useState([])
 
   useEffect(() => {
-    const saveTasks = JSON.parse(localStorage.getItem('tasks'))
+    const saveTasks = JSON.parse(localStorage.getItem('tasks'));
     if(saveTasks){
-      setTasks(saveTasks)
+      return settasks(saveTasks)
+    }else{
+      console.log('No tasks found')
     }
   }, [])
-  const AddTasks = (e) => {
+
+  const tasksSubmited = (e) => {
     e.preventDefault()
     if(!userTasks){
-      alert("Add Tasks")
+      alert('Please add a task')
       return
     }
-    console.log(userTasks)
-    const updatedTasks = [...tasks, userTasks];
-    setTasks(updatedTasks)
-    localStorage.setItem('tasks' , JSON.stringify(updatedTasks))
-    setUserTaks('');
+    const newTaks ={
+      text: userTasks,
+      completed : false,
+    }
+    const newTasks = [...tasks, newTaks];
+    settasks(newTasks);
+    setuserTasks('')
+    localStorage.setItem('tasks' , JSON.stringify(newTasks))
   }
-  const handleChange = (e , index) => {
-    const ischecked = e.target.checked;
-    const value = e.target.value;
-    const updated = [...tasks] 
-    console.log('checked' , ischecked , value, updated[index])
-
+  const handleChange = (e, index) => {
+    const newTaks = [...tasks];
+    newTaks[index].completed = e.target.checked;
+    settasks(newTaks)
+    console.log(newTaks)
+    localStorage.setItem('tasks' , JSON.stringify(newTaks))
   }
   return (
     <div>
-      <div>
-        <h1>Todo List App</h1>
-       <form onSubmit={AddTasks}>
-       <input type="text" value={userTasks} className='py-2 px-4 border border-black' placeholder='Add Tasks' onChange={(e) => setUserTaks(e.target.value)} />
-       <button className='py-1 px-2 border border-black'>Add Tasks</button>
-      {tasks.map((tasks, index) => 
-       (<div key={index}>
-         <label className='cursor-pointer'>
-         <input
-           type="checkbox"
-           onChange={(e) => handleChange(e, index)}
-          />
-         {tasks}
-          </label>
-           
-        </div>)
-       )}
-       </form>
+      <h1>Todo List App</h1>
+      <form onSubmit={tasksSubmited}>
+      <input 
+      type="text"
+       placeholder='Add Tasks'
+       value={userTasks}
+       onChange={(e) =>  setuserTasks(e.target.value) }
+        className='py-1 px-3 border border-black ' />
+      <button>Add Tasks</button> <br />
+      {tasks.map((item , index) => {
+        return (
+          <div key={index} className=''>
+        <label className='cursor-pointer'>
+          <input
+           type="checkbox" 
+           onChange={(e) => handleChange(e, index) }
+           />
+          <span className={item.completed ? 'line-through text-[#b2b2b2] ': ''}>{item.text}</span>
+        </label>
       </div>
+        )
+      })}
+      </form>
     </div>
   )
 }
